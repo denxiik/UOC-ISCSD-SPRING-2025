@@ -17,6 +17,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @Log4j2
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -34,29 +35,61 @@ public class DigitalSessionRESTController {
         return digitalSessionService.findAllDigitalSession();
     }
     
-    // TODO: add the code for the missing system operations here: 
-    // use the corresponding mapping HTTP request annotation with the parameter: "/{digitalSessionId}"
-    // and create the method getDigitalSessionById(@PathVariable @NotNull Long digitalSessionId)
-    // which call the corresponding getDigitalSessionById method 
+    // IMPLEMENTED all bellows
+    @GetMapping("/{digitalSessionId}")
+    public ResponseEntity<DigitalSession> getDigitalSessionById(@PathVariable @NotNull Long digitalSessionId) {
+        log.trace("getDigitalSessionById");
+        Optional<DigitalSession> digitalSession = digitalSessionService.getDigitalSessionById(digitalSessionId);
+        return digitalSession.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 
-    // TODO: add the code for the missing system operations here: 
-    // use the corresponding mapping HTTP request annotation with the parameter: "/digitalByUser"
-    // and create the method findDigitalSessionByUser(@RequestParam @NotNull Long userId)
-    // which call the corresponding findDigitalSessionByUser method 
-       
-    // TODO: add the code for the missing system operations here: 
-    // use the corresponding mapping HTTP request annotation with the parameter: "/createDigital"
-    // and create the method createDigitalSession(@RequestBody @Valid CreateDigitalSessionRequest createDigitalSessionRequest)
-    // which call the corresponding createDigitalSession method 
+    @GetMapping("/digitalByUser")
+    @ResponseStatus(HttpStatus.OK)
+    public List<DigitalSession> findDigitalSessionByUser(@RequestParam @NotNull Long userId) {
+        log.trace("findDigitalSessionByUser");
+        return digitalSessionService.findDigitalSessionByUser(userId);
+    }
 
-    // TODO: add the code for the missing system operations here: 
-    // use the corresponding mapping HTTP request annotation with the parameter: "/updateDigital/{digitalSessionId}"
-    // and create the method updateDigitalSession(@PathVariable @NotNull Long digitalSessionId, @RequestBody @Valid CreateDigitalSessionRequest updateDigitalSessionRequest)
-    // which call the corresponding updateDigitalSession method 
+    @PostMapping("/createDigital")
+    public ResponseEntity<Long> createDigitalSession(@RequestBody @Valid CreateDigitalSessionRequest createDigitalSessionRequest) {
+        log.trace("createDigitalSession");
+        DigitalSession digitalSession = DigitalSession.builder()
+                .description(createDigitalSessionRequest.getDescription())
+                .link(createDigitalSessionRequest.getLink())
+                .location(createDigitalSessionRequest.getLocation())
+                .userId(createDigitalSessionRequest.getUserId())
+                .build();
+        Long digitalSessionId = digitalSessionService.createDigitalSession(digitalSession);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(digitalSessionId)
+                .toUri();
+        return ResponseEntity.created(uri).body(digitalSessionId);
+    }
 
-    // TODO: add the code for the missing system operations here: 
-    // use the corresponding mapping HTTP request annotation with the parameter: "/removeDigital/{digitalSessionId}"
-    // and create the method removeDigitalSession(@PathVariable @NotNull Long digitalSessionId
-    // which call the corresponding removeDigitalSession method 
+    @PutMapping("/updateDigital/{digitalSessionId}")
+    public ResponseEntity<Long> updateDigitalSession(@PathVariable @NotNull Long digitalSessionId, @RequestBody @Valid CreateDigitalSessionRequest updateDigitalSessionRequest) {
+        log.trace("updateDigitalSession");
+        Long updatedId = digitalSessionService.updateDigitalSession(
+                digitalSessionId,
+                updateDigitalSessionRequest.getDescription(),
+                updateDigitalSessionRequest.getLink(),
+                updateDigitalSessionRequest.getLocation(),
+                updateDigitalSessionRequest.getUserId()
+        );
+        if (updatedId != null) {
+            return ResponseEntity.ok(updatedId);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/removeDigital/{digitalSessionId}")
+    public ResponseEntity<Void> removeDigitalSession(@PathVariable @NotNull Long digitalSessionId) {
+        log.trace("removeDigitalSession with id: {}", digitalSessionId);
+        digitalSessionService.removeDigitalSession(digitalSessionId);
+        return ResponseEntity.noContent().build();
+    }
 
 }
