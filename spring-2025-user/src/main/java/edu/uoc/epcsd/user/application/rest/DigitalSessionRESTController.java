@@ -87,7 +87,7 @@ public class DigitalSessionRESTController {
 
     @DeleteMapping("/removeDigital/{digitalSessionId}")
     public ResponseEntity<Void> removeDigitalSession(@PathVariable @NotNull Long digitalSessionId) {
-        log.trace("removeDigitalSession with id: {}", digitalSessionId);
+        log.trace("removeDigitalSession");
         digitalSessionService.removeDigitalSession(digitalSessionId);
         return ResponseEntity.noContent().build();
     }
