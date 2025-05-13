@@ -45,10 +45,17 @@ public class ProductRESTController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // TODO: add the code for the missing system operations here: 
-    // use the corresponding mapping HTTP request annotation with the parameter: "/search"
-    // and call the method findProductsByCriteria(FindProductsByCriteria findProductsCriteria)
-    // which call the corresponding findProductsByExample method 
+    // IMPLEMENTED
+    @PostMapping("/search")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Product> findProductsByCriteria(@RequestBody @Valid FindProductsByCriteria findProductsCriteria) {
+        log.trace("findProductsByCriteria");
+        Product productExample = Product.builder()
+                .name(findProductsCriteria.getName())
+                .categoryId(findProductsCriteria.getCategoryId())
+                .build();
+        return productService.findProductsByExample(productExample);
+    }
 
     @PostMapping
     public ResponseEntity<Long> createProduct(@RequestBody @NotNull @Valid CreateProductRequest createProductRequest) {
@@ -77,9 +84,13 @@ public class ProductRESTController {
         }
     }
 
-    // TODO: add the code for the missing system operations here: 
-    // use the corresponding mapping HTTP request annotation with the parameter: "/{productId}"
-    // and call the method removeProduct(@PathVariable @NotNull Long productId)
-    // which call the corresponding deleteProduct method 
+    // IMPLEMENTED
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<Void> removeProduct(@PathVariable @NotNull Long productId) {
+        log.trace("removeProduct");
+
+        productService.deleteProduct(productId);
+        return ResponseEntity.noContent().build();
+    }
 
 }

@@ -5,10 +5,13 @@ import edu.uoc.epcsd.notification.application.rest.dtos.GetProductResponse;
 import edu.uoc.epcsd.notification.application.rest.dtos.GetUserResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 
 @Log4j2
 @Service
@@ -22,9 +25,37 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public void notifyProductAvailable(ProductMessage productMessage) {
+        log.info("notifyProductAvailable");
 
-            // TODO: Use RestTemplate with the above userServiceUrl to query the User microservice in order to get the users that have an alert for the specified product (the date specified in the parameter may be the actual date: LocalDate.now()).
-            //  Then simulate the email notification for the alerted users by logging a line with INFO level for each user saying "Sending an email to user " + the user fullName
+        // TODO: Use RestTemplate with the above userServiceUrl to query the
+        //  User microservice in order to get the users that have an alert for
+        //  the specified product (the date specified in the parameter may be the actual date: LocalDate.now()).
+        //  Then simulate the email notification for the alerted users by logging a line with INFO level
+        //  for each user saying "Sending an email to user " + the user fullName
 
+        RestTemplate restTemplate = new RestTemplate();
+
+        try {
+            // Call the User microservice to get users with alerts for the product and date
+            String getUsersUrl = userServiceUrl + "?productId=" + productMessage.getProductId() + "&availableOnDate=" + LocalDate.now();
+            log.info("Calling User Service URL: {}", getUsersUrl);
+
+            ResponseEntity<GetUserResponse[]> response = restTemplate.getForEntity(getUsersUrl, GetUserResponse[].class);
+
+            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+                List<GetUserResponse> usersToAlert = Arrays.asList(response.getBody());
+                log.info("Retrieved {} users to alert for product {}", usersToAlert.size(), productMessage.getProductId());
+
+                // Simulate email notification for each alerted user
+                usersToAlert.forEach(user -> {
+                    log.info("Sending an email to user {}", user.getFullName());
+                });
+            } else {
+                log.warn("Failed to retrieve users to alert from User Service. Status: {}", response.getStatusCode());
+            }
+
+        } catch (Exception e) {
+            log.error("Error while querying User Service for alerted users: {}", e.getMessage());
+        }
     }
 }
