@@ -27,12 +27,6 @@ public class NotificationServiceImpl implements NotificationService {
     public void notifyProductAvailable(ProductMessage productMessage) {
         log.info("notifyProductAvailable");
 
-        // TODO: Use RestTemplate with the above userServiceUrl to query the
-        //  User microservice in order to get the users that have an alert for
-        //  the specified product (the date specified in the parameter may be the actual date: LocalDate.now()).
-        //  Then simulate the email notification for the alerted users by logging a line with INFO level
-        //  for each user saying "Sending an email to user " + the user fullName
-
         RestTemplate restTemplate = new RestTemplate();
 
         try {

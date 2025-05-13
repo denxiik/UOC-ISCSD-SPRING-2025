@@ -1,0 +1,9 @@
+D:\Programing\UOC-ISCSD-SPRING-2025\spring-2025-notification\src\main\java\edu\uoc\epcsd\notification\application\kafka\KafkaConstants.java
+D:\Programing\UOC-ISCSD-SPRING-2025\spring-2025-notification\src\main\java\edu\uoc\epcsd\notification\application\rest\dtos\GetUserResponse.java
+D:\Programing\UOC-ISCSD-SPRING-2025\spring-2025-notification\src\main\java\edu\uoc\epcsd\notification\domain\service\NotificationService.java
+D:\Programing\UOC-ISCSD-SPRING-2025\spring-2025-notification\src\main\java\edu\uoc\epcsd\notification\application\kafka\ProductMessage.java
+D:\Programing\UOC-ISCSD-SPRING-2025\spring-2025-notification\src\main\java\edu\uoc\epcsd\notification\application\rest\dtos\GetProductResponse.java
+D:\Programing\UOC-ISCSD-SPRING-2025\spring-2025-notification\src\main\java\edu\uoc\epcsd\notification\domain\service\NotificationServiceImpl.java
+D:\Programing\UOC-ISCSD-SPRING-2025\spring-2025-notification\src\main\java\edu\uoc\epcsd\notification\application\kafka\KafkaClassListener.java
+D:\Programing\UOC-ISCSD-SPRING-2025\spring-2025-notification\src\main\java\edu\uoc\epcsd\notification\NotificationApplication.java
+D:\Programing\UOC-ISCSD-SPRING-2025\spring-2025-notification\src\main\java\edu\uoc\epcsd\notification\application\kafka\KafkaConsumerConfig.java
